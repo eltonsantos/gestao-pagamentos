@@ -9,4 +9,6 @@ class User < ApplicationRecord
 
   has_many :payments
   has_one :commission
+
+  validates :password_confirmation, presence: true, on: %i[create update]
 end
