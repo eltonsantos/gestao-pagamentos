@@ -27,7 +27,7 @@ gem 'devise'
 gem 'devise-jwt'
 gem 'kaminari'
 gem 'faker'
-gem 'jsonapi-serializer'
+gem 'jsonapi-serializer'  
 gem 'rack-cors'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
