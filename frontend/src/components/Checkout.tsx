@@ -1,7 +1,7 @@
-export function Dashboard() {
+export function Checkout() {
   return (
     <div className="flex-1 p-6">
-      <h2 className="text-2xl font-semibold mb-4">Listagem de Usuários</h2>
+      <h2 className="text-2xl font-semibold mb-4">Checkout</h2>
       <div className="bg-white p-6 rounded shadow-md">
         <table className="w-full">
           <thead>
