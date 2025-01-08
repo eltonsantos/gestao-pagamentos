@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FaHome, FaUser, FaMoneyBillWave, FaUsers } from 'react-icons/fa';
+import { FaUser, FaMoneyBillWave, FaUsers } from 'react-icons/fa';
 
 export function Sidebar() {
   return (

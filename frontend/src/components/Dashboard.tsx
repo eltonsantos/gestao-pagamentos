@@ -18,7 +18,7 @@ export function Dashboard() {
       <div className="flex justify-between mb-5">
         <h2 className="text-2xl font-semibold">Listagem de Vendedores</h2>
         <Link to="/register-seller">
-          <button className="bg-orange-400 hover:bg-orange-500 text-white p-4 rounded-md">
+          <button className="bg-orange-600 hover:bg-orange-500 text-white p-4 rounded-md">
             Cadastrar vendedor
           </button>
         </Link>

@@ -78,6 +78,14 @@ export function Payment() {
     return `R$ ${value.toFixed(2).replace(".", ",")}`;
   };
 
+  // const calculateFilterSales = () => {
+  //   return payments.reduce((total, payment) => total + payment.value, 0);
+  // };
+
+  const calculateTotalSales = () => {
+    return mockPayments.reduce((total, payment) => total + payment.value, 0);
+  };
+
   return (
     <div className="flex-1 p-6">
       <h2 className="text-2xl font-semibold mb-4">Pagamentos</h2>
@@ -147,6 +155,10 @@ export function Payment() {
         </select>
       </div>
 
+      <h2 className="text-white font-bold text-3xl mb-4 text-right bg-green-400 p-6">Valor total das vendas: {formatCurrency(calculateTotalSales())}</h2>
+
+      {/* <h3 className="text-white font-bold text-3xl mb-4 text-right bg-green-400 p-6">Valor filtrado das vendas: {formatCurrency(calculateFilterSales())}</h3> */}
+
       <div className="bg-white p-6 rounded shadow-md">
         <table className="w-full">
           <thead>
@@ -163,7 +175,6 @@ export function Payment() {
           </thead>
           <tbody>
             {payments.map((payment) => {
-              // Encontre o cliente e o vendedor com base nos IDs
               const customer = mockCustomers.find(c => c.id === payment.customer_id);
               const seller = mockSellers.find(s => s.id === payment.user_id);
 
