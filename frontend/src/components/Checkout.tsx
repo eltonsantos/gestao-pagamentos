@@ -6,30 +6,46 @@ const mockSellers = [
   { id: "3", name: "Rosiane Rosa", commission_percentage: 15 },
 ];
 
+const mockCustomers = [
+  { id: "1", name: "Cliente 1", email: "cliente1@cliente.com", phone: "85987651111" },
+  { id: "2", name: "Cliente 2", email: "cliente2@cliente.com", phone: "85987652222" },
+  { id: "3", name: "Cliente 3", email: "cliente3@cliente.com", phone: "85987653333" },
+  { id: "4", name: "Cliente 4", email: "cliente4@cliente.com", phone: "85987654444" },
+  { id: "5", name: "Cliente 5", email: "cliente5@cliente.com", phone: "85987655555" },
+];
+
 export function Checkout() {
   const [sellers, ] = useState(mockSellers);
+  const [customers, ] = useState(mockCustomers);
   const [selectedSeller, setSelectedSeller] = useState<string | undefined>(undefined);
+  const [selectedCustomer, setSelectedCustomer] = useState<string | undefined>(undefined);
   const [saleValue, setSaleValue] = useState<number>(0);
   const [gateway, setGateway] = useState<string>("");
   const [commission, setCommission] = useState<number>(0);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const seller = sellers.find((s) => s.id === selectedSeller);
+    const customer = customers.find((c) => c.id === selectedCustomer);
+
     const saleData = {
       value: saleValue,
       gateway,
-      seller_id: selectedSeller,
+      seller: seller?.name,
+      customer: customer?.name,
       commission,
     };
 
     const valorComissao = (saleData.value * saleData.commission) / 100;
 
     console.log("Venda realizada:", saleData);
-    console.log(`Valor que o vendedor ganhou: R$ ${valorComissao.toFixed(2)}`);
+    console.log(`Valor que o vendedor ${saleData.seller} ganhou de comissão: R$ ${valorComissao.toFixed(2)}`);
 
     setSaleValue(0);
     setGateway("");
     setSelectedSeller("");
+    setSelectedCustomer("");
     setCommission(0);
   };
 
@@ -82,6 +98,22 @@ export function Checkout() {
               {sellers.map((seller) => (
                 <option key={seller.id} value={seller.id}>
                   {seller.name} - Comissão: {seller.commission_percentage}%
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Cliente</label>
+            <select
+              value={selectedCustomer}
+              onChange={(e) => setSelectedCustomer(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+            >
+              <option value="">Selecione um Cliente</option>
+              {customers.map((customer) => (
+                <option key={customer.id} value={customer.id}>
+                  {customer.name}
                 </option>
               ))}
             </select>
