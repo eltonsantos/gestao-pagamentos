@@ -1,6 +1,4 @@
 class PaymentsController < ApplicationController
-  # before_action :authenticate_user!
-
   # GET /payments
   def index
     @payments = Payment.all
