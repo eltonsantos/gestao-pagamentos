@@ -4,7 +4,7 @@ import { Header } from "./components/Header";
 import { Sidebar } from "./components/Sidebar";
 import { Checkout } from "./components/Checkout";
 import { Payment } from "./components/Payment";
-import { RegisterSeller } from "./components/RegisterSeller";
+import { FormSeller } from "./components/FormSeller";
 
 export function App() {
   return (
@@ -18,7 +18,7 @@ export function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/payments" element={<Payment />} />
-              <Route path="/register-seller" element={<RegisterSeller />} />
+              <Route path="/register-seller" element={<FormSeller />} />
             </Routes>
           </div>
         </div>

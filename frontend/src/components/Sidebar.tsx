@@ -6,10 +6,6 @@ export function Sidebar() {
     <div className="text-slate-600  bg-white w-72 p-6 flex flex-col border-2 border-r-orange-300 text-3xl">
       <nav className="flex flex-col space-y-4">
         <Link to="/" className="flex items-center space-x-2 hover:text-orange-600">
-          <FaHome />
-          <span>Home</span>
-        </Link>
-        <Link to="/" className="flex items-center space-x-2 hover:text-orange-600">
           <FaUser />
           <span>Vendedor</span>
         </Link>
