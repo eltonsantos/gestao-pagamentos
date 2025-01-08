@@ -1,7 +1,10 @@
 export function Dashboard() {
   return (
     <div className="flex-1 p-6">
-      <h2 className="text-2xl font-semibold mb-4">Listagem de Usuários</h2>
+      <div className="flex justify-between mb-5">
+        <h2 className="text-2xl font-semibold">Listagem de Vendedores</h2>
+        <button className="bg-orange-400 hover:bg-orange-500 text-white p-4 rounded-md">Cadastrar vendedor</button>
+      </div>
       <div className="bg-white p-6 rounded shadow-md">
         <table className="w-full">
           <thead>

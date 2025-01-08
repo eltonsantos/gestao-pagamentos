@@ -1,38 +1,111 @@
+import React, { useState } from "react";
+
+const mockSellers = [
+  { id: "1", name: "Elton Santos", commission_percentage: 10 },
+  { id: "2", name: "Ericson Melo", commission_percentage: 12 },
+  { id: "3", name: "Rosiane Rosa", commission_percentage: 15 },
+];
+
 export function Checkout() {
+  const [sellers, ] = useState(mockSellers);
+  const [selectedSeller, setSelectedSeller] = useState<string | undefined>(undefined);
+  const [saleValue, setSaleValue] = useState<number>(0);
+  const [gateway, setGateway] = useState<string>("");
+  const [commission, setCommission] = useState<number>(0);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const saleData = {
+      value: saleValue,
+      gateway,
+      seller_id: selectedSeller,
+      commission,
+    };
+
+    const valorComissao = (saleData.value * saleData.commission) / 100;
+
+    console.log("Venda realizada:", saleData);
+    console.log(`Valor que o vendedor ganhou: R$ ${valorComissao.toFixed(2)}`);
+
+    setSaleValue(0);
+    setGateway("");
+    setSelectedSeller("");
+    setCommission(0);
+  };
+
+  const handleSellerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const sellerId = e.target.value;
+    setSelectedSeller(sellerId);
+
+    const selected = sellers.find((seller) => seller.id === sellerId);
+    if (selected) {
+      setCommission(selected.commission_percentage);
+    }
+  };
+
   return (
     <div className="flex-1 p-6">
       <h2 className="text-2xl font-semibold mb-4">Checkout</h2>
       <div className="bg-white p-6 rounded shadow-md">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b">
-              <th className="py-2 px-4">ID</th>
-              <th className="py-2 px-4">Nome</th>
-              <th className="py-2 px-4">Email</th>
-              <th className="py-2 px-4">Comissão</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="py-2 px-4">1</td>
-              <td className="py-2 px-4">Elton Santos</td>
-              <td className="py-2 px-4">elton@elton.com</td>
-              <td className="py-2 px-4">R$ 200,00</td>
-            </tr>
-            <tr>
-              <td className="py-2 px-4">2</td>
-              <td className="py-2 px-4">Ericson Melo</td>
-              <td className="py-2 px-4">eric@eric.com</td>
-              <td className="py-2 px-4">R$ 250,00</td>
-            </tr>
-            <tr>
-              <td className="py-2 px-4">3</td>
-              <td className="py-2 px-4">Rosiane Rosa</td>
-              <td className="py-2 px-4">rose@rose.com</td>
-              <td className="py-2 px-4">R$ 300,00</td>
-            </tr>
-          </tbody>
-        </table>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Valor da Venda</label>
+            <input
+              type="number"
+              value={saleValue}
+              onChange={(e) => setSaleValue(parseFloat(e.target.value))}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Gateway de Pagamento</label>
+            <select
+              value={gateway}
+              onChange={(e) => setGateway(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+            >
+              <option value="">Selecione o gateway de pagamento</option>
+              <option value="Mercado Pago">Mercado Pago</option>
+              <option value="PagSeguro">PagSeguro</option>
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Vendedor</label>
+            <select
+              value={selectedSeller}
+              onChange={handleSellerChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+            >
+              <option value="">Selecione um Vendedor</option>
+              {sellers.map((seller) => (
+                <option key={seller.id} value={seller.id}>
+                  {seller.name} - Comissão: {seller.commission_percentage}%
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Comissão</label>
+            <input
+              type="text"
+              value={`R$ ${commission.toFixed(2)}`}
+              readOnly
+              className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md sm:text-sm"
+            />
+          </div>
+
+          <div className="mt-4">
+            <button
+              type="submit"
+              className="w-full bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 focus:outline-none"
+            >
+              Efetuar Venda
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
