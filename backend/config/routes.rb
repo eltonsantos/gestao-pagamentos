@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :users
-  resources :payments, only: [:index]
+  resources :payments, defaults: { format: :json }
 
   devise_for :users, path: '', path_names: {
     sign_in: 'login',

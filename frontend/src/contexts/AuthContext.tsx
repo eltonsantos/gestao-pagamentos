@@ -1,10 +1,11 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { api } from "../services/api"
 
 interface AuthContextType {
   isAuthenticated: boolean;
   userEmail: string | null;
-  login: (email: string, password: string) => boolean;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
 
@@ -15,19 +16,48 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const login = (email: string, password: string) => {
-    if (email === 'teste@teste.com' && password === '123456') {
+  useEffect(() => {
+    const token = localStorage.getItem('jwt_token');
+    if (token) {
       setIsAuthenticated(true);
-      setUserEmail(email);
-      navigate('/');
-      return true;
+      api.defaults.headers.Authorization = `Bearer ${token}`;
     }
-    return false;
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    try {
+      const response = await api.post('/login', {
+        user: {
+          email: email,
+          password: password
+        }
+      });
+
+      if (response.data?.status?.data?.token) {
+        const { token, user } = response.data.status.data;
+        
+        localStorage.setItem('jwt_token', token);
+  
+        setIsAuthenticated(true);
+        setUserEmail(user.email);
+  
+        api.defaults.headers.Authorization = `Bearer ${token}`;
+  
+        navigate('/');
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Login falhou:', error);
+      return false;
+    }
   };
 
   const logout = () => {
+    localStorage.removeItem('jwt_token');
     setIsAuthenticated(false);
     setUserEmail(null);
+    api.defaults.headers.Authorization = '';
     navigate('/login');
   };
 

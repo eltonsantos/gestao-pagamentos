@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { fetchPayments } from "../services/api"
 
 export function Payment() {
   const [payments, setPayments] = useState<any[]>([]);
-  const [totalValue, setTotalValue] = useState(0);
+  const [, setTotalValue] = useState(0);
   const [totalAllPayments, setTotalAllPayments] = useState(0);
   const [statusFilter, setStatusFilter] = useState("");
   const [gatewayFilter, setGatewayFilter] = useState("");
@@ -37,8 +38,8 @@ export function Payment() {
         ...payment,
         value: parseFloat(payment.value)
       })));
-      setTotalValue(Number(data.total_value));
-      setSellers(data.sellers);
+      setTotalValue(Number(data.total_value || 0));
+      setSellers(data.sellers || []);
     };
 
     fetchData();

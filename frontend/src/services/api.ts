@@ -1,8 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: 'http://localhost:3000',
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('jwt_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('jwt_token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 export const fetchPayments = async (filters: any) => {
   try {
@@ -10,6 +35,6 @@ export const fetchPayments = async (filters: any) => {
     return response.data;
   } catch (error) {
     console.error('Erro ao buscar pagamentos:', error);
-    return { payments: [], total_value: 0 };
+    return { payments: [], total_value: 0, sellers: [] }; // Adicione sellers aqui
   }
 };

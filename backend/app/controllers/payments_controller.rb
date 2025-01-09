@@ -1,7 +1,10 @@
 class PaymentsController < ApplicationController
+  respond_to :json
+  
   # GET /payments
   def index
     @payments = Payment.all
+    @sellers = User.where(role: :seller)
 
     if params[:start_date].present? && params[:end_date].present?
       @payments = @payments.where(created_at: params[:start_date]..params[:end_date])

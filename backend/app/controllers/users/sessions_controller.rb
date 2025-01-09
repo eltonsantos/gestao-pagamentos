@@ -5,15 +5,33 @@ class Users::SessionsController < Devise::SessionsController
   
   respond_to :json
 
+  def create
+    self.resource = warden.authenticate!(auth_options)
+    sign_in(resource_name, resource)
+    respond_with(resource)
+  end
+
   private
 
   def respond_with(current_user, _opts = {})
-    render json: {
-      status: { 
-        code: 200, message: 'Logged in successfully.',
-        data: { user: UserSerializer.new(current_user).serializable_hash[:data][:attributes] }
-      }
-    }, status: :ok
+    if current_user.persisted?
+      token = current_user.generate_jwt_token
+      render json: {
+        status: { 
+          code: 200, 
+          message: 'Logged in successfully.',
+          data: {
+            user: UserSerializer.new(current_user).serializable_hash[:data][:attributes],
+            token: token
+          }
+        }
+      }, status: :ok
+    else
+      render json: {
+        status: 401,
+        message: "Invalid email or password"
+      }, status: :unauthorized
+    end
   end
 
   def respond_to_on_destroy

@@ -11,4 +11,11 @@ class User < ApplicationRecord
   has_one :commission
 
   validates :password_confirmation, presence: true, on: %i[create update]
+
+  def generate_jwt_token
+    JWT.encode(
+      { sub: id, exp: 60.days.from_now.to_i },
+      Rails.application.credentials.devise_jwt_secret_key!
+    )
+  end
 end

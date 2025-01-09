@@ -8,17 +8,17 @@ export function Login() {
   const [errors, setErrors] = useState<string[]>([]);
   const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email === "" || password === "") {
       setErrors(["Por favor, preencha todos os campos."]);
       return
     }
 
-    const loginSuccess = login(email, password);
+    const loginSuccess = await login(email, password);
 
     if (!loginSuccess) {
-      setErrors(["Credenciais inválidas. Use teste@teste.com e senha 123456"]);
+      setErrors(["Credenciais inválidas."]);
     } else {
       setErrors([]);
     }
