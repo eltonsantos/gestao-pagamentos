@@ -22,8 +22,7 @@ api.interceptors.response.use(
   response => response,
   error => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('jwt_token');
-      window.location.href = '/login';
+      console.error('Erro de autenticação:', error);
     }
     return Promise.reject(error);
   }

@@ -12,8 +12,12 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return !!localStorage.getItem('jwt_token');
+  });
+  const [userEmail, setUserEmail] = useState<string | null>(() => {
+    return localStorage.getItem('user_email');
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,7 +41,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { token, user } = response.data.status.data;
         
         localStorage.setItem('jwt_token', token);
-  
+        localStorage.setItem('user_email', user.email);
+
         setIsAuthenticated(true);
         setUserEmail(user.email);
   
@@ -55,6 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     localStorage.removeItem('jwt_token');
+    localStorage.removeItem('user_email');
     setIsAuthenticated(false);
     setUserEmail(null);
     api.defaults.headers.Authorization = '';
