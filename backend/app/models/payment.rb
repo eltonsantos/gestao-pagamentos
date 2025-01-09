@@ -8,4 +8,11 @@ class Payment < ApplicationRecord
   def formatted_value
     "R$ #{'%.2f' % value}".gsub('.', ',')
   end
+
+  def as_json(options = {})
+    super(options).merge({
+      'status' => status,
+      'gateway' => gateway
+    })
+  end
 end

@@ -19,8 +19,18 @@ class PaymentsController < ApplicationController
       @payments = @payments.where(user_id: params[:seller_id])
     end
 
-    @payments = @payments.page(params[:page]).per(10)
+    @payments = @payments.includes(:user, :customer).page(params[:page]).per(10)
 
-    render json: @payments, include: [:customer, :user]
+    total_value = @payments.sum(:value).to_f
+
+    render json: {
+      payments: @payments.as_json(include: { 
+        customer: { only: [:name, :email, :phone] },
+        user: { only: [:name], include: { commission: { only: [:percentage] } } }
+      }, methods: [:status, :gateway]),
+      total_value: total_value,
+      status_names: Payment.statuses,
+      sellers: User.where(role: :seller).select(:id, :name)
+    }
   end
 end

@@ -32,8 +32,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_07_003119) do
 
   create_table "payments", force: :cascade do |t|
     t.decimal "value"
-    t.string "status"
-    t.string "gateway"
+    t.integer "status", default: 0
+    t.integer "gateway", default: 0
     t.bigint "user_id", null: false
     t.bigint "customer_id", null: false
     t.datetime "created_at", null: false
