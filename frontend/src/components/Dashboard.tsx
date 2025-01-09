@@ -1,17 +1,34 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { fetchUsers } from "../services/api";
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: number;
+  commission?: {
+    percentage: number;
+  };
+}
 
 export function Dashboard() {
-  const mockSellers = [
-    {
-      id: "1",
-      name: "Elton Santos",
-      email: "elton@elton.com",
-      commission: 200,
-    },
-    { id: "2", name: "Ericson Melo", email: "eric@eric.com", commission: 250 },
-    { id: "3", name: "Rosiane Rosa", email: "rose@rose.com", commission: 300 },
-  ];
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        const usersData = await fetchUsers();
+        console.log('Users Data: ', usersData);
+        setUsers(usersData);
+      } catch (error) {
+        console.error('Erro ao carregar usuários', error);
+      }
+    };
+  
+    loadUsers();
+  }, []);
 
   return (
     <div className="flex-1 p-6">
@@ -34,23 +51,29 @@ export function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            {mockSellers.map((seller) => (
-              <tr key={seller.id}>
-                <td className="py-2 px-4">{seller.id}</td>
-                <td className="py-2 px-4">{seller.name}</td>
-                <td className="py-2 px-4">{seller.email}</td>
-                <td className="py-2 px-4">R$ {seller.commission.toFixed(2)}</td>
+            {users.map((user) => (
+              <tr key={user.id}>
+                <td className="py-2 px-4">{user.id}</td>
+                <td className="py-2 px-4">{user.name}</td>
+                <td className="py-2 px-4">{user.email}</td>
+                <td className="py-2 px-4">
+                  {user.commission && user.commission.percentage != null
+                    ? `${user.commission.percentage.toFixed(2)}%`
+                    : "Não disponível"}
+                </td>
                 <td className="py-2 px-4">
                   <button
                     className="text-blue-500 hover:text-blue-700 mx-2 p-2 rounded-lg hover:bg-blue-100 transition-all duration-200"
                     title="Editar"
-                    onClick={() => console.log(`Editar vendedor ${seller.id}`)}>
+                    onClick={() => console.log(`Editar vendedor ${user.id}`)}
+                  >
                     <FaEdit className="text-xl" />
                   </button>
                   <button
                     className="text-red-500 hover:text-red-700 p-2 rounded-lg hover:bg-red-100 transition-all duration-200"
                     title="Excluir"
-                    onClick={() => console.log(`Excluir vendedor ${seller.id}`)}>
+                    onClick={() => console.log(`Excluir vendedor ${user.id}`)}
+                  >
                     <FaTrash className="text-xl" />
                   </button>
                 </td>

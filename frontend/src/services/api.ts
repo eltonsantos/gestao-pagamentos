@@ -35,6 +35,17 @@ export const fetchPayments = async (filters: any) => {
     return response.data;
   } catch (error) {
     console.error('Erro ao buscar pagamentos:', error);
-    return { payments: [], total_value: 0, sellers: [] }; // Adicione sellers aqui
+    return { payments: [], total_value: 0, sellers: [] };
+  }
+};
+
+export const fetchUsers = async () => {
+  try {
+    const response = await api.get('/users');
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar usuários:', error);
+    return [];
   }
 };

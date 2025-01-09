@@ -13,9 +13,6 @@ class User < ApplicationRecord
   validates :password_confirmation, presence: true, on: %i[create update]
 
   def generate_jwt_token
-    JWT.encode(
-      { sub: id, exp: 60.days.from_now.to_i },
-      Rails.application.credentials.devise_jwt_secret_key!
-    )
+    JWT.encode({ sub: id, exp: 24.hours.from_now.to_i }, Rails.application.credentials.devise_jwt_secret_key!)
   end
 end
