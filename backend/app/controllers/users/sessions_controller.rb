@@ -21,7 +21,12 @@ class Users::SessionsController < Devise::SessionsController
           code: 200, 
           message: 'Logged in successfully.',
           data: {
-            user: UserSerializer.new(current_user).serializable_hash[:data][:attributes],
+            user: {
+              id: current_user.id,
+              email: current_user.email,
+              name: current_user.name,
+              role: current_user.role
+            },
             token: token
           }
         }

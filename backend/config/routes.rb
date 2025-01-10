@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  resources :users
+  resources :users do
+    get :current, on: :collection
+  end
   resources :customers
   resources :payments, defaults: { format: :json }
 

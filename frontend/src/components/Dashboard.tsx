@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import { fetchUsers } from "../services/api";
 
 interface User {
@@ -34,7 +34,7 @@ export function Dashboard() {
     <div className="flex-1 p-6">
       <div className="flex justify-between mb-5">
         <h2 className="text-2xl font-semibold">Listagem de Vendedores</h2>
-        <Link to="/register-seller">
+        <Link to="/create-seller">
           <button className="bg-orange-600 hover:bg-orange-500 text-white p-4 rounded-md">
             Cadastrar vendedor
           </button>
@@ -62,20 +62,15 @@ export function Dashboard() {
                     : "Não disponível"}
                 </td>
                 <td className="py-2 px-4">
-                  <button
-                    className="text-blue-500 hover:text-blue-700 mx-2 p-2 rounded-lg hover:bg-blue-100 transition-all duration-200"
-                    title="Editar"
-                    onClick={() => console.log(`Editar vendedor ${user.id}`)}
-                  >
-                    <FaEdit className="text-xl" />
-                  </button>
-                  <button
-                    className="text-red-500 hover:text-red-700 p-2 rounded-lg hover:bg-red-100 transition-all duration-200"
-                    title="Excluir"
-                    onClick={() => console.log(`Excluir vendedor ${user.id}`)}
-                  >
-                    <FaTrash className="text-xl" />
-                  </button>
+                  <Link to="/edit-seller">
+                    <button
+                      className="text-blue-500 hover:text-blue-700 mx-2 p-2 rounded-lg hover:bg-blue-100 transition-all duration-200"
+                      title="Editar"
+                      onClick={() => console.log(`Editar vendedor ${user.id}`)}
+                    >
+                      <FaEdit className="text-xl" />
+                    </button>
+                  </Link>
                 </td>
               </tr>
             ))}

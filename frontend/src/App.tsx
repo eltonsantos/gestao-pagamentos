@@ -5,7 +5,8 @@ import { Login } from "./components/Login";
 import { Dashboard } from "./components/Dashboard";
 import { Checkout } from "./components/Checkout";
 import { Payment } from "./components/Payment";
-import { FormSeller } from "./components/FormSeller";
+import { Home } from "./components/Home";
+import { CreateSeller } from "./components/CreateSeller";
 
 export function App() {
   return (
@@ -14,10 +15,11 @@ export function App() {
 
       <Route element={<PrivateRoute />}>
         <Route element={<DefaultLayout />}>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/sellers" element={<Dashboard />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/payments" element={<Payment />} />
-          <Route path="/register-seller" element={<FormSeller />} />
+          <Route path="/create-seller" element={<CreateSeller />} />
         </Route>
       </Route>
     </Routes>

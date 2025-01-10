@@ -3,8 +3,13 @@ class PaymentsController < ApplicationController
   
   # GET /payments
   def index
-    @payments = Payment.all
-    @sellers = User.where(role: :seller)
+    @payments = if current_user.admin?
+      Payment.all
+    else
+      current_user.payments
+    end
+    # @payments = Payment.all
+    # @sellers = User.where(role: :seller)
 
     if params[:start_date].present? && params[:end_date].present?
       @payments = @payments.where(created_at: params[:start_date]..params[:end_date])
@@ -35,7 +40,7 @@ class PaymentsController < ApplicationController
       total_pages: @payments.total_pages,
       current_page: @payments.current_page,
       status_names: Payment.statuses,
-      sellers: User.where(role: :seller).select(:id, :name)
+      sellers: current_user.admin? ? User.where(role: :seller).select(:id, :name) : []
     }
   end
 
