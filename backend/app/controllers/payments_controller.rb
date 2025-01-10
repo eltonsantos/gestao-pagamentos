@@ -44,6 +44,11 @@ class PaymentsController < ApplicationController
 
   def create
     @payment = Payment.new(payment_params)
+
+    unless current_user.admin?
+      @payment.user_id = current_user.id
+    end
+
     @payment.status = Payment.statuses.keys.sample.to_sym
     # @payment.status = :pending
 
@@ -60,11 +65,19 @@ class PaymentsController < ApplicationController
   private
 
   def payment_params
-    params.require(:payment).permit(
-      :value,
-      :gateway,
-      :user_id,
-      :customer_id
-    )
+    if current_user.admin?
+      params.require(:payment).permit(
+        :value,
+        :gateway,
+        :user_id,
+        :customer_id
+      )
+    else
+      params.require(:payment).permit(
+        :value,
+        :gateway,
+        :customer_id
+      )
+    end
   end
 end
