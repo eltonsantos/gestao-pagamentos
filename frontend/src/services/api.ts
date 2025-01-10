@@ -48,3 +48,13 @@ export const fetchUsers = async () => {
     return [];
   }
 };
+
+export const fetchCustomers = async () => {
+  try {
+    const response = await api.get('/customers');
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar clientes:', error);
+    return [];
+  }
+};

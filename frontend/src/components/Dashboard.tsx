@@ -57,8 +57,8 @@ export function Dashboard() {
                 <td className="py-2 px-4">{user.name}</td>
                 <td className="py-2 px-4">{user.email}</td>
                 <td className="py-2 px-4">
-                  {user.commission && user.commission.percentage != null
-                    ? `${user.commission.percentage.toFixed(2)}%`
+                  {user.commission?.percentage != null
+                    ? `${Number(user.commission.percentage).toFixed(2)}%`
                     : "Não disponível"}
                 </td>
                 <td className="py-2 px-4">

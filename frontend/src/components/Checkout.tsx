@@ -1,61 +1,93 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
+import { fetchUsers, fetchCustomers, api } from "../services/api";
 
-const mockSellers = [
-  { id: "1", name: "Elton Santos", commission_percentage: 10 },
-  { id: "2", name: "Ericson Melo", commission_percentage: 12 },
-  { id: "3", name: "Rosiane Rosa", commission_percentage: 15 },
-];
+interface Commission {
+  percentage: number;
 
-const mockCustomers = [
-  { id: "1", name: "Cliente 1", email: "cliente1@cliente.com", phone: "85987651111" },
-  { id: "2", name: "Cliente 2", email: "cliente2@cliente.com", phone: "85987652222" },
-  { id: "3", name: "Cliente 3", email: "cliente3@cliente.com", phone: "85987653333" },
-  { id: "4", name: "Cliente 4", email: "cliente4@cliente.com", phone: "85987654444" },
-  { id: "5", name: "Cliente 5", email: "cliente5@cliente.com", phone: "85987655555" },
-];
+}
+interface Seller {
+  id: string;
+  name: string;
+  commission: Commission;
+}
+
+interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+}
 
 export function Checkout() {
-  const [sellers, ] = useState(mockSellers);
-  const [customers, ] = useState(mockCustomers);
-  const [selectedSeller, setSelectedSeller] = useState<string | undefined>(undefined);
-  const [selectedCustomer, setSelectedCustomer] = useState<string | undefined>(undefined);
+  const [sellers, setSellers] = useState<Seller[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [selectedSeller, setSelectedSeller] = useState<string>("");
+  const [selectedCustomer, setSelectedCustomer] = useState<string>("");
   const [saleValue, setSaleValue] = useState<number>(0);
   const [gateway, setGateway] = useState<string>("");
   const [commission, setCommission] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const seller = sellers.find((s) => s.id === selectedSeller);
-    const customer = customers.find((c) => c.id === selectedCustomer);
-
-    const saleData = {
-      value: saleValue,
-      gateway,
-      seller: seller?.name,
-      customer: customer?.name,
-      commission,
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [sellersData, customersData] = await Promise.all([
+          fetchUsers(),
+          fetchCustomers()
+        ]);
+        
+        setSellers(sellersData);
+        setCustomers(customersData);
+      } catch (error) {
+        console.error("Erro ao carregar dados:", error);
+      }
     };
 
-    const valorComissao = (saleData.value * saleData.commission) / 100;
+    loadData();
+  }, []);
 
-    console.log("Venda realizada:", saleData);
-    console.log(`Valor que o vendedor ${saleData.seller} ganhou de comissão: R$ ${valorComissao.toFixed(2)}`);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-    setSaleValue(0);
-    setGateway("");
-    setSelectedSeller("");
-    setSelectedCustomer("");
-    setCommission(0);
+    try {
+      await api.post('/payments', {
+        payment: {
+          value: saleValue,
+          gateway: gateway.toLowerCase().replace(" ", "_"),
+          user_id: selectedSeller,
+          customer_id: selectedCustomer,
+          commission: commission,
+        }
+      });
+
+      setSaleValue(0);
+      setGateway("");
+      setSelectedSeller("");
+      setSelectedCustomer("");
+      setCommission(0);
+
+      alert("Venda registrada com sucesso!");
+    } catch (error) {
+      console.error("Erro ao registrar venda:", error);
+      alert("Erro ao registrar venda. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSellerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const sellerId = e.target.value;
+    console.log("Vendedor: ", sellerId)
     setSelectedSeller(sellerId);
 
+    console.log("Vendedores: ", sellers)
+    
     const selected = sellers.find((seller) => seller.id === sellerId);
-    if (selected) {
-      setCommission(selected.commission_percentage);
+    console.log("Selecionado: ", selected)
+    if (selected && selected.commission) {
+      console.log("Comissao: ", selected.commission)
+      setCommission(selected.commission.percentage);
     }
   };
 
@@ -97,7 +129,7 @@ export function Checkout() {
               <option value="">Selecione um Vendedor</option>
               {sellers.map((seller) => (
                 <option key={seller.id} value={seller.id}>
-                  {seller.name} - Comissão: {seller.commission_percentage}%
+                  {seller.name} - Comissão: {seller.commission?.percentage}%
                 </option>
               ))}
             </select>
@@ -113,7 +145,7 @@ export function Checkout() {
               <option value="">Selecione um Cliente</option>
               {customers.map((customer) => (
                 <option key={customer.id} value={customer.id}>
-                  {customer.name}
+                  {customer.name} - {customer.email}
                 </option>
               ))}
             </select>
@@ -123,7 +155,7 @@ export function Checkout() {
             <label className="block text-sm font-medium text-gray-700">Comissão</label>
             <input
               type="text"
-              value={`R$ ${commission.toFixed(2)}`}
+              value={`${commission}%`}
               readOnly
               className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md sm:text-sm"
             />
@@ -132,9 +164,10 @@ export function Checkout() {
           <div className="mt-4">
             <button
               type="submit"
+              disabled={isLoading}
               className="w-full bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 focus:outline-none"
             >
-              Efetuar Venda
+              {isLoading ? 'Processando...' : 'Efetuar Venda'}
             </button>
           </div>
         </form>

@@ -1,4 +1,4 @@
-class CommissionSerializer
+class CommissionSerializer < ActiveModel::Serializer
   include JSONAPI::Serializer
-  attributes :percentage
+  attributes :id, :percentage
 end
