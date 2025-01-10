@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { fetchPayments } from "../services/api"
+import { api } from '../services/api';
 import ReactPaginate from "react-paginate";
 
 export function Payment() {
@@ -15,6 +16,19 @@ export function Payment() {
   const [sellers, setSellers] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+      const checkUserRole = async () => {
+        try {
+          const response = await api.get('/users/current');
+          setUserRole(response.data.role);
+        } catch (error) {
+          console.error('Erro ao verificar papel do usuário:', error);
+        }
+      };
+      checkUserRole();
+    }, [userRole]);
 
   useEffect(() => {
     const fetchTotalData = async () => {
@@ -146,21 +160,23 @@ export function Payment() {
         </select>
       </div>
 
-      <div className="mb-4">
-        <label htmlFor="seller" className="block text-sm font-medium text-gray-700">Vendedor:</label>
-        <select
-          id="seller"
-          onChange={(e) => setSellerFilter(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-        >
-          <option value="">Todos</option>
-          {sellers.map(seller => (
-            <option key={seller.id} value={seller.id}>
-              {seller.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      {userRole === "admin" && (
+        <div className="mb-4">
+          <label htmlFor="seller" className="block text-sm font-medium text-gray-700">Vendedor:</label>
+          <select
+            id="seller"
+            onChange={(e) => setSellerFilter(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+          >
+            <option value="">Todos</option>
+            {sellers.map(seller => (
+              <option key={seller.id} value={seller.id}>
+                {seller.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <h2 className="text-white font-bold text-3xl mb-4 text-right bg-green-400 p-6">Valor total das vendas: {formatCurrency(totalAllPayments)}</h2>
 

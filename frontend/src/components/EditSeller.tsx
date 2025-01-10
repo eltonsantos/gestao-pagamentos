@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../services/api';
+import { toast } from "react-toastify";
 
 export function EditSeller() {
   const { id } = useParams(); 
@@ -11,8 +13,6 @@ export function EditSeller() {
     password: '',
     password_confirmation: '',
   });
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,14 +41,11 @@ export function EditSeller() {
         },
         commission_percentage: formData.commission_percentage,
       });
-      console.log("Editado com sucesso")
-      setSuccess('Vendedor editado com sucesso.');
-      setTimeout(() => {
-        navigate('/sellers');
-      }, 1500);
-    } catch (error) {
+      toast.success("Vendedor atualizado com sucesso")
+      navigate('/sellers');
+    } catch (error: any) {
       console.error('Erro ao atualizar vendedor:', error);
-      setError("Erro inesperado.");
+      toast.error(error.message);
     }
   };
 
@@ -56,8 +53,6 @@ export function EditSeller() {
     <div className="flex-1 p-6">
       <h2 className="text-2xl font-semibold mb-4">Cadastrar Vendedor</h2>
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md space-y-4">
-        {error && <p className="text-red-500">{error}</p>}
-        {success && <p className="text-green-500">{success}</p>}
 
         <div>
           <label className="block text-sm font-medium">Nome</label>

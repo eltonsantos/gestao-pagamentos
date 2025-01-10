@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../services/api';
 
 export function Sidebar() {
-  const [userRole, setUserRole] = useState<number | string>("admin");
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     const checkUserRole = async () => {

@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
 import { api } from '../services/api';
+import { toast } from "react-toastify";
 
 export function CreateSeller() {
   const [formData, setFormData] = useState({
@@ -11,15 +13,12 @@ export function CreateSeller() {
       commission_percentage: ''
     }
   });
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await api.post('/users', formData);
-      console.log("Vendedor criado com sucesso:", response.data);
-      setSuccess("Vendedor criado com sucesso.");
+      await api.post('/users', formData);
+      toast.success("Vendedor criado com sucesso")
 
       setFormData({
         user: {
@@ -30,10 +29,10 @@ export function CreateSeller() {
           commission_percentage: ''
         }
       });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error('Erro ao criar vendedor:', error);
-      setError(error.response?.data?.errors?.join(', ') || "Erro ao criar vendedor");
+      toast.error(error.message);
+      // setError(error.response?.data?.errors?.join(', ') || "Erro ao criar vendedor");
     }
   };
 
@@ -51,9 +50,6 @@ export function CreateSeller() {
     <div className="flex-1 p-6">
       <h2 className="text-2xl font-semibold mb-4">Cadastrar Vendedor</h2>
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md space-y-4">
-        {error && <p className="text-red-500">{error}</p>}
-        {success && <p className="text-green-500">{success}</p>}
-
         <div>
           <label className="block text-sm font-medium">Nome</label>
           <input

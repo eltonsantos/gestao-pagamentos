@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from "../services/api"
+import { toast } from 'react-toastify';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -49,11 +51,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         api.defaults.headers.Authorization = `Bearer ${token}`;
   
         navigate('/');
+        toast.success("Logado com sucesso!");
         return true;
       }
       return false;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login falhou:', error);
+      toast.error('Login falhou:', error)
       return false;
     }
   };

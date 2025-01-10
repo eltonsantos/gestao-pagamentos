@@ -65,7 +65,6 @@ export function ListSeller() {
                     <button
                       className="text-blue-500 hover:text-blue-700 mx-2 p-2 rounded-lg hover:bg-blue-100 transition-all duration-200"
                       title="Editar"
-                      onClick={() => console.log(`Editar vendedor ${user.id}`)}
                     >
                       <FaEdit className="text-xl" />
                     </button>

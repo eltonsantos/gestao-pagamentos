@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { fetchUsers, fetchCustomers, api } from "../services/api";
+import { toast } from "react-toastify";
 
 interface Commission {
   percentage: number;
-
 }
+
 interface Seller {
   id: string;
   name: string;
@@ -38,8 +40,9 @@ export function Checkout() {
         
         setSellers(sellersData);
         setCustomers(customersData);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Erro ao carregar dados:", error);
+        toast.error(error.message);
       }
     };
 
@@ -67,10 +70,10 @@ export function Checkout() {
       setSelectedCustomer("");
       setCommission(0);
 
-      alert("Venda registrada com sucesso!");
+      toast.success("Venda registrada com sucesso!");
     } catch (error) {
       console.error("Erro ao registrar venda:", error);
-      alert("Erro ao registrar venda. Tente novamente.");
+      toast.error("Erro ao registrar venda. Tente novamente.");
     } finally {
       setIsLoading(false);
     }
