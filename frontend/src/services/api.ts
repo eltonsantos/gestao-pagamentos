@@ -41,7 +41,6 @@ export const fetchPayments = async (filters: any) => {
 export const fetchUsers = async () => {
   try {
     const response = await api.get('/users');
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Erro ao buscar usuários:', error);

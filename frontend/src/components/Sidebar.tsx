@@ -12,7 +12,6 @@ export function Sidebar() {
     const checkUserRole = async () => {
       try {
         const response = await api.get('/users/current');
-        console.log("Role: ", userRole)
         setUserRole(response.data.role);
       } catch (error) {
         console.error('Erro ao verificar papel do usuário:', error);

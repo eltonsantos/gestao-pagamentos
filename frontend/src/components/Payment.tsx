@@ -36,7 +36,6 @@ export function Payment() {
         page: currentPage + 1,
       };
       const data = await fetchPayments(filters);
-      console.log(data);
 
       setPayments(data.payments.map((payment: any) => ({
         ...payment,

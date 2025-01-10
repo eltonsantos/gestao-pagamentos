@@ -13,14 +13,13 @@ interface User {
   };
 }
 
-export function Dashboard() {
+export function ListSeller() {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
     const loadUsers = async () => {
       try {
         const usersData = await fetchUsers();
-        console.log('Users Data: ', usersData);
         setUsers(usersData);
       } catch (error) {
         console.error('Erro ao carregar usuários', error);

@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { DefaultLayout } from "./components/DefaultLayout";
 import { PrivateRoute } from "./routes/private.routes";
 import { Login } from "./components/Login";
-import { Dashboard } from "./components/Dashboard";
+import { ListSeller } from "./components/ListSeller";
 import { Checkout } from "./components/Checkout";
 import { Payment } from "./components/Payment";
 import { Home } from "./components/Home";
@@ -17,7 +17,7 @@ export function App() {
       <Route element={<PrivateRoute />}>
         <Route element={<DefaultLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/sellers" element={<Dashboard />} />
+          <Route path="/sellers" element={<ListSeller />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/payments" element={<Payment />} />
           <Route path="/create-seller" element={<CreateSeller />} />
