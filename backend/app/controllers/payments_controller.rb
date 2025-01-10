@@ -32,8 +32,35 @@ class PaymentsController < ApplicationController
         user: { only: [:name], include: { commission: { only: [:percentage] } } }
       }, methods: [:status, :gateway]),
       total_value: total_value,
+      total_pages: @payments.total_pages,
+      current_page: @payments.current_page,
       status_names: Payment.statuses,
       sellers: User.where(role: :seller).select(:id, :name)
     }
+  end
+
+  def create
+    @payment = Payment.new(payment_params)
+    @payment.status = :pending
+
+    if @payment.save
+      render json: @payment.as_json(include: { 
+        customer: { only: [:name, :email, :phone] },
+        user: { only: [:name], include: { commission: { only: [:percentage] } } }
+      }), status: :created
+    else
+      render json: { errors: @payment.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def payment_params
+    params.require(:payment).permit(
+      :value,
+      :gateway,
+      :user_id,
+      :customer_id
+    )
   end
 end

@@ -78,15 +78,11 @@ export function Checkout() {
 
   const handleSellerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const sellerId = e.target.value;
-    console.log("Vendedor: ", sellerId)
     setSelectedSeller(sellerId);
-
-    console.log("Vendedores: ", sellers)
     
-    const selected = sellers.find((seller) => seller.id === sellerId);
-    console.log("Selecionado: ", selected)
+    const selected = sellers.find((seller) => seller.id.toString() === sellerId.toString());
+
     if (selected && selected.commission) {
-      console.log("Comissao: ", selected.commission)
       setCommission(selected.commission.percentage);
     }
   };
@@ -129,7 +125,7 @@ export function Checkout() {
               <option value="">Selecione um Vendedor</option>
               {sellers.map((seller) => (
                 <option key={seller.id} value={seller.id}>
-                  {seller.name} - Comissão: {seller.commission?.percentage}%
+                  {seller.name}
                 </option>
               ))}
             </select>

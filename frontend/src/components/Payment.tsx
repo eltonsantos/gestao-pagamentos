@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { fetchPayments } from "../services/api"
+import ReactPaginate from "react-paginate";
 
 export function Payment() {
   const [payments, setPayments] = useState<any[]>([]);
@@ -12,6 +13,8 @@ export function Payment() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [sellers, setSellers] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     const fetchTotalData = async () => {
@@ -30,6 +33,7 @@ export function Payment() {
         seller_id: sellerFilter,
         start_date: startDate,
         end_date: endDate,
+        page: currentPage + 1,
       };
       const data = await fetchPayments(filters);
       console.log(data);
@@ -40,10 +44,15 @@ export function Payment() {
       })));
       setTotalValue(Number(data.total_value || 0));
       setSellers(data.sellers || []);
+      setTotalPages(data.total_pages);
     };
 
     fetchData();
-  }, [statusFilter, gatewayFilter, sellerFilter, startDate, endDate]);
+  }, [statusFilter, gatewayFilter, sellerFilter, startDate, endDate, currentPage]);
+
+  const handlePageClick = (event: { selected: number }) => {
+    setCurrentPage(event.selected);
+  };
 
   const formatCurrency = (value: number | string) => {
     const numValue = typeof value === 'string' ? parseFloat(value) : value;
@@ -181,6 +190,22 @@ export function Payment() {
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="mt-6 flex justify-center">
+          <ReactPaginate
+            previousLabel={<span className="font-semibold text-gray-700">{"Anterior"}</span>}
+            nextLabel={<span className="font-semibold text-gray-700">{"Próxima"}</span>}
+            pageCount={totalPages}
+            onPageChange={handlePageClick}
+            containerClassName="flex space-x-2"
+            pageClassName="px-4 py-2 border rounded-md text-sm cursor-pointer hover:bg-gray-200"
+            previousClassName="px-4 py-2 border rounded-md text-sm cursor-pointer hover:bg-gray-200"
+            nextClassName="px-4 py-2 border rounded-md text-sm cursor-pointer hover:bg-gray-200"
+            activeClassName="bg-blue-500 text-white"
+          />
+        </div>
+      )}
     </div>
   );
 }
