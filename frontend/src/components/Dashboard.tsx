@@ -62,7 +62,7 @@ export function Dashboard() {
                     : "Não disponível"}
                 </td>
                 <td className="py-2 px-4">
-                  <Link to="/edit-seller">
+                  <Link to={`/edit-seller/${user.id}`}>
                     <button
                       className="text-blue-500 hover:text-blue-700 mx-2 p-2 rounded-lg hover:bg-blue-100 transition-all duration-200"
                       title="Editar"

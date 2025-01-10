@@ -8,6 +8,10 @@ class Payment < ApplicationRecord
   validates :value, presence: true, numericality: { greater_than: 0 }
   validates :gateway, presence: true
 
+  def commission_percentage
+    user.commissions.order(created_at: :desc).first&.percentage || 0
+  end
+
   def formatted_value
     "R$ #{'%.2f' % value}".gsub('.', ',')
   end

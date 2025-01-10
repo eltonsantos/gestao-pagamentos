@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../services/api';
 
-export function EditSeller({ id }: { id: string }) {
+export function EditSeller() {
+  const { id } = useParams(); 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    commission_percentage: ''
+    commission_percentage: '',
+    password: '',
+    password_confirmation: '',
   });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadSeller = async () => {
@@ -16,7 +21,9 @@ export function EditSeller({ id }: { id: string }) {
       setFormData({
         name: response.data.name,
         email: response.data.email,
-        commission_percentage: response.data.commission.percentage
+        commission_percentage: response.data.commission.percentage,
+        password: '',
+        password_confirmation: '',
       });
     };
     loadSeller();
@@ -25,9 +32,20 @@ export function EditSeller({ id }: { id: string }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.put(`/users/${id}`, formData);
+      await api.put(`/users/${id}`, {
+        user: {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          password_confirmation: formData.password_confirmation,
+        },
+        commission_percentage: formData.commission_percentage,
+      });
       console.log("Editado com sucesso")
-      setSuccess("Vendedor editado com sucesso.");
+      setSuccess('Vendedor editado com sucesso.');
+      setTimeout(() => {
+        navigate('/sellers');
+      }, 1500);
     } catch (error) {
       console.error('Erro ao atualizar vendedor:', error);
       setError("Erro inesperado.");
@@ -76,6 +94,28 @@ export function EditSeller({ id }: { id: string }) {
             required
             min="0"
             max="100"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Senha (deixe em branco para não alterar)</label>
+          <input
+            type="password"
+            placeholder="Senha"
+            value={formData.password}
+            onChange={e => setFormData({...formData, password: e.target.value})}
+            className="w-full p-2 mt-1 border border-gray-300 rounded"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Confirmação de Senha</label>
+          <input
+            type="password"
+            placeholder="Confirme a Senha"
+            value={formData.password_confirmation}
+            onChange={e => setFormData({...formData, password_confirmation: e.target.value})}
+            className="w-full p-2 mt-1 border border-gray-300 rounded"
           />
         </div>
         

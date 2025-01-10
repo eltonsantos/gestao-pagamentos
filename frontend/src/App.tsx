@@ -7,6 +7,7 @@ import { Checkout } from "./components/Checkout";
 import { Payment } from "./components/Payment";
 import { Home } from "./components/Home";
 import { CreateSeller } from "./components/CreateSeller";
+import { EditSeller } from "./components/EditSeller";
 
 export function App() {
   return (
@@ -20,6 +21,7 @@ export function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/payments" element={<Payment />} />
           <Route path="/create-seller" element={<CreateSeller />} />
+          <Route path="/edit-seller/:id" element={<EditSeller />} />
         </Route>
       </Route>
     </Routes>
