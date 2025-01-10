@@ -9,7 +9,6 @@ import { Payment } from "./components/Payment";
 import { Home } from "./components/Home";
 import { CreateSeller } from "./components/CreateSeller";
 import { EditSeller } from "./components/EditSeller";
-import { CopyPayment } from "./components/CopyPayment";
 
 Modal.setAppElement('#root');
 
@@ -17,7 +16,6 @@ export function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/copy-payment/:id" element={<CopyPayment />} />
 
       <Route element={<PrivateRoute />}>
         <Route element={<DefaultLayout />}>

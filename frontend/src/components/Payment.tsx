@@ -3,8 +3,7 @@ import { useState, useEffect } from "react";
 import { fetchPayments } from "../services/api"
 import { api } from '../services/api';
 import ReactPaginate from "react-paginate";
-import { FaSearchDollar , FaPaste } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { FaSearchDollar } from "react-icons/fa";
 import { ShowPaymentModal } from "./ShowPaymentModal";
 
 export function Payment() {
@@ -224,21 +223,11 @@ export function Payment() {
                   <td>
                     <button
                       className="text-blue-500 hover:text-blue-700 mx-2 p-2 rounded-lg hover:bg-blue-100 transition-all duration-200"
-                      title="Editar"
+                      title="Ver detalhes"
                       onClick={() => handleShowPayment(payment.id)}
                     >
                       <FaSearchDollar className="text-xl" />
                     </button>
-                  </td>
-                  <td>
-                    <Link to={`/copy-payment/${payment.id}`}>
-                      <button
-                        className="text-blue-500 hover:text-blue-700 mx-2 p-2 rounded-lg hover:bg-blue-100 transition-all duration-200"
-                        title="Editar"
-                      >
-                        <FaPaste className="text-xl" />
-                      </button>
-                    </Link>
                   </td>
                 </tr>
               );
