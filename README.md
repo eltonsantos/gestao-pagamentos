@@ -32,12 +32,16 @@ This project was developed using the following technologies:
 - [React Toastify](https://fkhadra.github.io/react-toastify/introduction)
 - [React Router DOM](https://reactrouter.com/)
 - [React Paginate](https://github.com/AdeleD/react-paginate)
+- [React Modal](https://github.com/reactjs/react-modal)
+- [Chartsjs](https://www.chartjs.org/)
+- [React Charts](https://react-chartjs-2.js.org/)
 - [React Icons](https://react-icons.github.io/)
 - [Devise](https://github.com/heartcombo/devise)
 - [Kaminari](https://github.com/kaminari/kaminari)
 - [Faker](https://github.com/faker-ruby/faker)
 - [JSONAPI Serializer](https://github.com/jsonapi-serializer/jsonapi-serializer)
 - [Rack CORS](https://github.com/cyu/rack-cors)
+- [Date FNS](https://date-fns.org/)
 
 ## 🚀 Getting started
 
@@ -142,6 +146,16 @@ Permissions: Restricted access to administrators or users with permission to vie
   
 Returns the details of a specific payment, identified by id.
 Permissions: Access allowed to the user themselves or administrators.
+
+- GET /payments/top_selling_sellers
+  
+Returns the details of the top selling sellers.
+Permissions: Access allowed only admin.
+
+- GET /payments/sales_by_date
+  
+Returns the details of the sales by date.
+Permissions: Access allowed only admin.
 
 - POST /payments
 
