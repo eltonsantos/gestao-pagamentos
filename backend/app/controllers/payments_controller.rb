@@ -62,6 +62,22 @@ class PaymentsController < ApplicationController
     end
   end
 
+  def show
+    @payment = Payment.find_by(id: params[:id])
+
+    if @payment
+      render json: @payment.as_json(
+        include: {
+          customer: { only: [:name, :email, :phone] },
+          user: { only: [:name], include: { commission: { only: [:percentage] } } }
+        }, 
+        methods: [:status, :gateway]
+      )
+    else
+      render json: { error: "Pagamento não encontrado" }, status: :not_found
+    end
+  end
+
   private
 
   def payment_params

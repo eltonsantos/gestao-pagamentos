@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import { fetchPayments } from "../services/api"
 import { api } from '../services/api';
 import ReactPaginate from "react-paginate";
-import { FaPaste } from "react-icons/fa";
+import { FaSearchDollar , FaPaste } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { ShowPaymentModal } from "./ShowPaymentModal";
 
 export function Payment() {
   const [payments, setPayments] = useState<any[]>([]);
@@ -19,18 +20,20 @@ export function Payment() {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPaymentId, setSelectedPaymentId] = useState<string | null>(null);
 
   useEffect(() => {
-      const checkUserRole = async () => {
-        try {
-          const response = await api.get('/users/current');
-          setUserRole(response.data.role);
-        } catch (error) {
-          console.error('Erro ao verificar papel do usuário:', error);
-        }
-      };
-      checkUserRole();
-    }, [userRole]);
+    const checkUserRole = async () => {
+      try {
+        const response = await api.get('/users/current');
+        setUserRole(response.data.role);
+      } catch (error) {
+        console.error('Erro ao verificar papel do usuário:', error);
+      }
+    };
+    checkUserRole();
+  }, [userRole]);
 
   useEffect(() => {
     const fetchTotalData = async () => {
@@ -64,6 +67,11 @@ export function Payment() {
 
     fetchData();
   }, [statusFilter, gatewayFilter, sellerFilter, startDate, endDate, currentPage]);
+
+  function handleShowPayment(paymentId: any) {
+    setSelectedPaymentId(paymentId);
+    setIsModalOpen(true);
+  };
 
   const handlePageClick = (event: { selected: number }) => {
     setCurrentPage(event.selected);
@@ -214,7 +222,16 @@ export function Payment() {
                   <td className={`py-2 px-4 ${getStatusColor(payment.status)}`}>{formatStatus(payment.status)}</td>
                   <td className="py-2 px-4">{formatGateway(payment.gateway)}</td>
                   <td>
-                    <Link to={`/show-payment/${payment.id}`}>
+                    <button
+                      className="text-blue-500 hover:text-blue-700 mx-2 p-2 rounded-lg hover:bg-blue-100 transition-all duration-200"
+                      title="Editar"
+                      onClick={() => handleShowPayment(payment.id)}
+                    >
+                      <FaSearchDollar className="text-xl" />
+                    </button>
+                  </td>
+                  <td>
+                    <Link to={`/copy-payment/${payment.id}`}>
                       <button
                         className="text-blue-500 hover:text-blue-700 mx-2 p-2 rounded-lg hover:bg-blue-100 transition-all duration-200"
                         title="Editar"
@@ -229,6 +246,14 @@ export function Payment() {
           </tbody>
         </table>
       </div>
+
+      {isModalOpen && (
+        <ShowPaymentModal
+          isOpen={isModalOpen}
+          selectedPaymentId={selectedPaymentId}
+          onRequestClose={() => setIsModalOpen(false)}
+        />
+      )}
 
       {totalPages > 1 && (
         <div className="mt-6 flex justify-center">

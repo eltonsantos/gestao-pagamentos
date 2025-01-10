@@ -138,6 +138,11 @@ Permissions: Restricted access to administrators.
 Returns a list of all completed payments.
 Permissions: Restricted access to administrators or users with permission to view payments.
 
+- GET /payments/:id
+  
+Returns the details of a specific payment, identified by id.
+Permissions: Access allowed to the user themselves or administrators.
+
 - POST /payments
 
 Creates a new payment (executes a transaction).

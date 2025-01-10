@@ -3,7 +3,7 @@ Rails.application.routes.draw do
     get :current, on: :collection
   end
   resources :customers, only: [:index]
-  resources :payments, only: [:index, :create], defaults: { format: :json }
+  resources :payments, only: [:index, :show, :create], defaults: { format: :json }
 
   devise_for :users, path: '', path_names: {
     sign_in: 'login',
