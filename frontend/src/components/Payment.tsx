@@ -83,6 +83,17 @@ export function Payment() {
     }, 0);
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "pending":
+        return "text-purple-500";
+      case "approved":
+        return "text-green-500";
+      case "failed":
+        return "text-red-500";
+    }
+  };
+
   return (
     <div className="flex-1 p-6">
       <h2 className="text-2xl font-semibold mb-4">Pagamentos</h2>
@@ -182,7 +193,7 @@ export function Payment() {
                   <td className="py-2 px-4">{customer?.phone}</td>
                   <td className="py-2 px-4">{formatCurrency(payment.value)}</td>
                   <td className="py-2 px-4">{formatCurrency(commissionValue)}</td>
-                  <td className="py-2 px-4">{formatStatus(payment.status)}</td>
+                  <td className={`py-2 px-4 ${getStatusColor(payment.status)}`}>{formatStatus(payment.status)}</td>
                   <td className="py-2 px-4">{formatGateway(payment.gateway)}</td>
                 </tr>
               );

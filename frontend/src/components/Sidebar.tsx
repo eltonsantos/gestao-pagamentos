@@ -19,7 +19,7 @@ export function Sidebar() {
       }
     };
     checkUserRole();
-  }, []);
+  }, [userRole]);
 
   return (
     <div className="text-slate-600 bg-white w-80 p-6 flex flex-col border-2 border-r-orange-300 text-3xl">

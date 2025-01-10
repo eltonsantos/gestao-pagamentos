@@ -8,8 +8,6 @@ class PaymentsController < ApplicationController
     else
       current_user.payments
     end
-    # @payments = Payment.all
-    # @sellers = User.where(role: :seller)
 
     if params[:start_date].present? && params[:end_date].present?
       @payments = @payments.where(created_at: params[:start_date]..params[:end_date])
@@ -46,7 +44,8 @@ class PaymentsController < ApplicationController
 
   def create
     @payment = Payment.new(payment_params)
-    @payment.status = :pending
+    @payment.status = Payment.statuses.keys.sample.to_sym
+    # @payment.status = :pending
 
     if @payment.save
       render json: @payment.as_json(include: { 
