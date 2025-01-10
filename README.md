@@ -192,7 +192,7 @@ Permissions: Access allowed to anyone wishing to register.
 ## 🔖 Layout
 
 <p align="center">
-  <img alt="gestao-pagamentos" src=".github/login-gestao-pagamentos.png" width="1120px">
+  <img alt="gestao-pagamentos" src=".github/home-gestao-pagamentos.png" width="1120px">
 </p>
 
 <p align="center">
