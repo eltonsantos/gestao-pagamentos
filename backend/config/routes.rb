@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
-  resources :users do
+  resources :users, only: [:index, :show, :create, :update] do
     get :current, on: :collection
   end
-  resources :customers
-  resources :payments, defaults: { format: :json }
+  resources :customers, only: [:index]
+  resources :payments, only: [:index, :create], defaults: { format: :json }
 
   devise_for :users, path: '', path_names: {
     sign_in: 'login',
@@ -14,8 +14,4 @@ Rails.application.routes.draw do
     sessions: 'users/sessions',
     registrations: 'users/registrations'
   }
-
-  get "up" => "rails/health#show", as: :rails_health_check
-
-  # root "posts#index"
 end

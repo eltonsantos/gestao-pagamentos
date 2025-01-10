@@ -51,7 +51,7 @@ export function EditSeller() {
 
   return (
     <div className="flex-1 p-6">
-      <h2 className="text-2xl font-semibold mb-4">Cadastrar Vendedor</h2>
+      <h2 className="text-2xl font-semibold mb-4">Editar Vendedor</h2>
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md space-y-4">
 
         <div>

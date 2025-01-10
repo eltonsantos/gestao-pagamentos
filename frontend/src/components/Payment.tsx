@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { fetchPayments } from "../services/api"
 import { api } from '../services/api';
 import ReactPaginate from "react-paginate";
+import { FaPaste } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export function Payment() {
   const [payments, setPayments] = useState<any[]>([]);
@@ -193,6 +195,7 @@ export function Payment() {
               <th className="py-2 px-4">Comissão</th>
               <th className="py-2 px-4">Status</th>
               <th className="py-2 px-4">Gateway</th>
+              <th className="py-2 px-4"></th>
             </tr>
           </thead>
           <tbody>
@@ -210,6 +213,16 @@ export function Payment() {
                   <td className="py-2 px-4">{formatCurrency(commissionValue)}</td>
                   <td className={`py-2 px-4 ${getStatusColor(payment.status)}`}>{formatStatus(payment.status)}</td>
                   <td className="py-2 px-4">{formatGateway(payment.gateway)}</td>
+                  <td>
+                    <Link to={`/show-payment/${payment.id}`}>
+                      <button
+                        className="text-blue-500 hover:text-blue-700 mx-2 p-2 rounded-lg hover:bg-blue-100 transition-all duration-200"
+                        title="Editar"
+                      >
+                        <FaPaste className="text-xl" />
+                      </button>
+                    </Link>
+                  </td>
                 </tr>
               );
             })}
