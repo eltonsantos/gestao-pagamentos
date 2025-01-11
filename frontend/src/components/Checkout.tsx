@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { fetchUsers, fetchCustomers, api } from "../services/api";
 import { toast } from "react-toastify";
+import { useAuth } from "../contexts/AuthContext";
 
 interface Commission {
   percentage: number;
@@ -21,6 +22,7 @@ interface Customer {
 }
 
 export function Checkout() {
+  const { isAdmin } = useAuth();
   const [sellers, setSellers] = useState<Seller[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedSeller, setSelectedSeller] = useState<string>("");
@@ -29,20 +31,18 @@ export function Checkout() {
   const [gateway, setGateway] = useState<string>("");
   const [commission, setCommission] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const userResponse = await api.get('/users/current');
         const currentUserData = userResponse.data;
-        setUserRole(currentUserData.role);
   
         if (currentUserData.role !== 'admin') {
           setCommission(currentUserData.commission?.percentage || 0);
         }
   
-        if (currentUserData.role === 'admin') {
+        if (isAdmin) {
           const sellersData = await fetchUsers();
           setSellers(sellersData);
         }
@@ -56,19 +56,7 @@ export function Checkout() {
     };
   
     loadData();
-  }, []);
-
-  useEffect(() => {
-    const checkUserRole = async () => {
-      try {
-        const response = await api.get('/users/current');
-        setUserRole(response.data.role);
-      } catch (error) {
-        console.error('Erro ao verificar papel do usuário:', error);
-      }
-    };
-    checkUserRole();
-  }, [userRole]);
+  }, [isAdmin]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,7 +77,9 @@ export function Checkout() {
       setGateway("");
       setSelectedSeller("");
       setSelectedCustomer("");
-      setCommission(0);
+      if (isAdmin) {
+        setCommission(0);
+      }
 
       toast.success("Venda registrada com sucesso!");
     } catch (error) {
@@ -139,7 +129,7 @@ export function Checkout() {
             </select>
           </div>
 
-          {userRole === "admin" && (
+          {isAdmin && (
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700">Vendedor</label>
               <select

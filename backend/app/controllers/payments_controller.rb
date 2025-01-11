@@ -79,29 +79,33 @@ class PaymentsController < ApplicationController
   end
 
   def top_selling_sellers
-    @sellers = Payment.where(status: :approved)
-                      .group(:user_id)
-                      .select('user_id, SUM(value) as total_sales')
-                      .order('total_sales DESC')
-                      .limit(5)
-                      .includes(:user)
-
-    render json: @sellers.map { |payment| { name: payment.user.name, total_sales: payment.total_sales } }
+    if current_user.admin?
+      @sellers = Payment.where(status: :approved)
+                        .group(:user_id)
+                        .select('user_id, SUM(value) as total_sales')
+                        .order('total_sales DESC')
+                        .limit(5)
+                        .includes(:user)
+  
+      render json: @sellers.map { |payment| { name: payment.user.name, total_sales: payment.total_sales } }
+    end
   end
 
   def sales_by_date
-    @sales_by_date = Payment.where(status: [:approved, :pending, :failed])
-                            .group("DATE(created_at)")
-                            .select("DATE(created_at) as date, COUNT(*) as sales_count, SUM(value) as total_sales")
-                            .order("date")
-  
-    render json: @sales_by_date.map { |payment| 
-      {
-        date: payment.date.strftime('%d/%m/%y'),
-        sales_count: payment.sales_count,
-        total_sales: payment.total_sales
+    if current_user.admin?
+      @sales_by_date = Payment.where(status: [:approved, :pending, :failed])
+                              .group("DATE(created_at)")
+                              .select("DATE(created_at) as date, COUNT(*) as sales_count, SUM(value) as total_sales")
+                              .order("date")
+    
+      render json: @sales_by_date.map { |payment| 
+        {
+          date: payment.date.strftime('%d/%m/%y'),
+          sales_count: payment.sales_count,
+          total_sales: payment.total_sales
+        }
       }
-    }
+    end
   end
 
   private

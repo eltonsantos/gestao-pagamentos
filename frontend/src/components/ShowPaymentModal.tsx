@@ -3,6 +3,7 @@ import Modal from 'react-modal';
 import { api } from '../services/api';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { BiX } from "react-icons/bi";
 
 interface PaymentProps {
   id: string;
@@ -85,7 +86,7 @@ export function ShowPaymentModal({ isOpen, selectedPaymentId, onRequestClose }: 
           onClick={onRequestClose}
           className="text-gray-500 hover:text-gray-700 transition-colors"
         >
-          Fechar
+          <BiX className="font-semibold text-2xl" />
         </button>
       </div>
 

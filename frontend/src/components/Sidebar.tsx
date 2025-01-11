@@ -2,23 +2,10 @@ import { Link } from 'react-router-dom';
 import { FaHome, FaUsers } from 'react-icons/fa';
 import { MdPayments } from "react-icons/md";
 import { GrMoney } from "react-icons/gr";
-import { useEffect, useState } from 'react';
-import { api } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 
 export function Sidebar() {
-  const [userRole, setUserRole] = useState<string | null>(null);
-
-  useEffect(() => {
-    const checkUserRole = async () => {
-      try {
-        const response = await api.get('/users/current');
-        setUserRole(response.data.role);
-      } catch (error) {
-        console.error('Erro ao verificar papel do usuário:', error);
-      }
-    };
-    checkUserRole();
-  }, [userRole]);
+  const { isAdmin } = useAuth();
 
   return (
     <div className="text-slate-600 bg-white w-80 p-6 flex flex-col border-2 border-r-orange-300 text-3xl">
@@ -27,7 +14,7 @@ export function Sidebar() {
           <FaHome />
           <span>Home</span>
         </Link>
-        {userRole === "admin" && (    
+        {isAdmin && (    
           <Link to="/sellers" className="flex items-center space-x-2 hover:text-orange-600">
             <FaUsers />
             <span>Vendedores</span>

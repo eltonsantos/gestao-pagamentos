@@ -9,32 +9,34 @@ import numeral from "numeral";
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement);
 
 export function Home() {
-  const { userEmail } = useAuth();
+  const { userEmail, isAdmin } = useAuth();
   const [topSellers, setTopSellers] = useState<any[]>([]);
   const [salesByDate, setSalesByDate] = useState<any[]>([]);
 
   useEffect(() => {
-    const fetchTopSellers = async () => {
-      try {
-        const response = await api.get("/payments/top_selling_sellers");
-        setTopSellers(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar vendedores:", error);
-      }
-    };
-
-    const fetchSalesByDate = async () => {
-      try {
-        const response = await api.get("/payments/sales_by_date");
-        setSalesByDate(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar vendas por data:", error);
-      }
-    };
-
-    fetchTopSellers();
-    fetchSalesByDate();
-  }, []);
+    if (isAdmin) {
+      const fetchTopSellers = async () => {
+        try {
+          const response = await api.get("/payments/top_selling_sellers");
+          setTopSellers(response.data);
+        } catch (error) {
+          console.error("Erro ao buscar vendedores:", error);
+        }
+      };
+  
+      const fetchSalesByDate = async () => {
+        try {
+          const response = await api.get("/payments/sales_by_date");
+          setSalesByDate(response.data);
+        } catch (error) {
+          console.error("Erro ao buscar vendas por data:", error);
+        }
+      };
+  
+      fetchTopSellers();
+      fetchSalesByDate();
+    }
+  }, [isAdmin]);
 
   const formatCurrency = (value: number) => {
     return `R$ ${numeral(value).format('0,0.00')}`;
@@ -118,17 +120,19 @@ export function Home() {
         ao sistema <b>Gestão de pagamentos</b>
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">Vendedores que Mais Venderam</h2>
-          <Pie data={pieChartData} options={pieChartOptions} />
-        </div>
+      {isAdmin ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Vendedores que Mais Venderam</h2>
+            <Pie data={pieChartData} options={pieChartOptions} />
+          </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">Vendas por Data</h2>
-          <Bar data={barChartData} options={barChartOptions} />
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Vendas por Data</h2>
+            <Bar data={barChartData} options={barChartOptions} />
+          </div>
         </div>
-      </div>
+      ): ''}
     </div>
   );
 }

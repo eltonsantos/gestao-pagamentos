@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { fetchPayments } from "../services/api"
-import { api } from '../services/api';
 import ReactPaginate from "react-paginate";
 import { FaSearchDollar } from "react-icons/fa";
 import { ShowPaymentModal } from "./ShowPaymentModal";
+import { useAuth } from "../contexts/AuthContext";
 
 export function Payment() {
+  const { isAdmin } = useAuth();
   const [payments, setPayments] = useState<any[]>([]);
   const [, setTotalValue] = useState(0);
   const [totalAllPayments, setTotalAllPayments] = useState(0);
@@ -18,21 +19,8 @@ export function Payment() {
   const [sellers, setSellers] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [userRole, setUserRole] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPaymentId, setSelectedPaymentId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const checkUserRole = async () => {
-      try {
-        const response = await api.get('/users/current');
-        setUserRole(response.data.role);
-      } catch (error) {
-        console.error('Erro ao verificar papel do usuário:', error);
-      }
-    };
-    checkUserRole();
-  }, [userRole]);
 
   useEffect(() => {
     const fetchTotalData = async () => {
@@ -169,7 +157,7 @@ export function Payment() {
         </select>
       </div>
 
-      {userRole === "admin" && (
+      {isAdmin && (
         <div className="mb-4">
           <label htmlFor="seller" className="block text-sm font-medium text-gray-700">Vendedor:</label>
           <select

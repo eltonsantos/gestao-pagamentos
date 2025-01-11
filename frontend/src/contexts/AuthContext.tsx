@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 interface AuthContextType {
   isAuthenticated: boolean;
   userEmail: string | null;
+  isAdmin: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
@@ -20,6 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [userEmail, setUserEmail] = useState<string | null>(() => {
     return localStorage.getItem('user_email');
   });
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,6 +29,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (token) {
       setIsAuthenticated(true);
       api.defaults.headers.Authorization = `Bearer ${token}`;
+
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      setIsAdmin(decodedToken.role === 'admin');
     }
   }, []);
 
@@ -47,6 +52,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         setIsAuthenticated(true);
         setUserEmail(user.email);
+
+        const decodedToken = JSON.parse(atob(token.split('.')[1]));
+        setIsAdmin(decodedToken.role === 'admin');
   
         api.defaults.headers.Authorization = `Bearer ${token}`;
   
@@ -67,12 +75,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('user_email');
     setIsAuthenticated(false);
     setUserEmail(null);
+    setIsAdmin(false);
     api.defaults.headers.Authorization = '';
     navigate('/login');
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userEmail, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, userEmail, isAdmin, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
